@@ -21,7 +21,7 @@ def approval_program():
 
     # Initialization
     on_creation = Seq(
-            Assert(vote_begin < vote_end),
+            Assert(Txn.application_args[0] < Txn.application_args[1]),
             # Set the initial creator
             App.globalPut(Bytes("Creator"), Txn.sender()),
             Assert(Txn.application_args.length() == Int(3)),
