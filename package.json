@@ -9,7 +9,11 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@hookform/error-message": "^2.0.1",
+    "@mui/icons-material": "^5.10.14",
+    "@mui/material": "^5.10.14",
     "@reduxjs/toolkit": "^1.9.0",
     "algosdk": "^1.23.2",
     "axios": "^1.1.3",

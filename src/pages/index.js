@@ -1,39 +1,64 @@
-import React from 'react';
-import { useSelector } from 'react-redux'
-import Header from '../components/Header'
-import Footer from '../components/Footer'
+import React from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 import styled from "styled-components";
+import Link from "next/link";
+
+import { Button, Box, Typography } from "@mui/material";
 
 const Home = () => {
-    const user = useSelector(state => state.auth.user)
-    return (
-        <>
-            <ScrollView>
-                <Header />
-                <Container>
-                    {!user ? 
-                        <h1>Home</h1>
-                    :
-                        <>
-                            <h1>Dashboard</h1>
-                            <p><b>Name</b>: {user?.name || ''}</p>
-                            <p><b>Email</b>: {user?.email || ''}</p>
-                        </>
-                    }
-                </Container>
-            </ScrollView>
-            <Footer/>
-        </>
-    )
-}
+  return (
+    <>
+      <Box sx={{ display: "flex" }}>
+        <Header />
+        <Box
+          position="fixed"
+          top={0}
+          height="100%"
+          width="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Container>
+            <Box>
+              <Typography variant="h3">Welcome to TUM Voices!</Typography>
+              <Box sx={{ mt: 5 }}>
+                <Typography variant="body 1">
+                  This is the transparent and safe voting platform for political
+                  participation at TUM
+                </Typography>
+              </Box>
+              <Box sx={{ mt: 5 }}>
+                <img src={"/voting.jpg"} width="700px" height="300px"></img>
+              </Box>
+              <Box sx={{ mt: 10 }}>
+                <Link href="/login" passHref>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mr: 3, width: 700 }}
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </Box>
+            </Box>
+          </Container>
+        </Box>
+      </Box>
+      <Footer />
+    </>
+  );
+};
 
-export default Home
-
-const ScrollView = styled.div`
-    min-height: calc(100vh - 80px);
-`;
+export default Home;
 
 const Container = styled.div`
-    text-align: center;
-    padding-top: 50px;
+  align-content: center;
+  padding-top: 150px;
+  min-height: 100%;
+  margin: auto;
+  width: 800px;
+  max-width: 100%;
 `;
