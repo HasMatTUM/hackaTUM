@@ -27,7 +27,7 @@ def approval_program():
             Assert(Txn.application_args.length() == Int(3)),
             App.globalPut(vote_begin, Btoi(Txn.application_args[0])),
             App.globalPut(vote_end, Btoi(Txn.application_args[1])),
-            App.globalPut(survey_title, Btoi(Txn.application_args[2])),
+            App.globalPut(survey_title, Txn.application_args[2]),
             App.globalPut(vote_count_yes, Int(0)),
             App.globalPut(vote_count_no, Int(0)),
             Approve(),
