@@ -4,13 +4,18 @@ import json
 
 from testnet_algo_client import algod_client
 
+from helper import encode_app_args
+
 SENDER="YMISWLYZMSGP3GVDAWAGT4MD3J5ROCIFWZHWJR62QGFU5K2GKGPCUS5MYU"
 SENDER_PRIVATE="gPXtqprl9IzL5qWl7bSiIOSU9geDMwQznzY8uKxGOEbDESsvGWSM/ZqjBYBp8YPaexcJBbZPZMfagYtOq0ZRng=="
-APP_ID="123983031"
+#APP_ID="123983031"
+#APP_ARGS=["inc"]
+APP_ID=123983031
 APP_ARGS=["inc"]
-NAME="counter"
 
 # https://betterprogramming.pub/getting-started-with-algorand-413d3474cb5
+
+APP_ARGS=encode_app_args(APP_ARGS)
 
 params = algod_client.suggested_params()
 
