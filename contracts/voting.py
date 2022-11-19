@@ -3,14 +3,15 @@ from pyteal import *
 import os
 
 # Keys
-# We define the keys outside of the context op approval_program since we need them in clear_state_program as well
-registration_begin = Bytes("reg_bgn")
-registration_end = Bytes("reg_end")
 vote_begin = Bytes("vote_bgn")
 vote_end = Bytes("vote_end")
 vote_count_yes = Bytes("votes_yes")
 vote_count_no = Bytes("votes_no")
 has_voted = Bytes("has_voted")
+
+survey_title = Bytes("Title")
+
+owner_key = Bytes("owner")
 
 # Op messages
 yes_vote = Bytes("yes")
@@ -18,37 +19,32 @@ no_vote = Bytes("no")
 
 def approval_program():
 
+    # Initialization
     on_creation = Seq(
-            Assert(Txn.application_args.length() == Int(4)),
-            App.globalPut(registration_begin, Btoi(Txn.application_args[0])),
-            App.globalPut(registration_end, Btoi(Txn.application_args[1])),
-            App.globalPut(vote_begin, Btoi(Txn.application_args[2])),
-            App.globalPut(vote_end, Btoi(Txn.application_args[3])),
+            Assert(vote_begin < vote_end),
+            # Set the initial creator
+            App.globalPut(Bytes("Creator"), Txn.sender()),
+            Assert(Txn.application_args.length() == Int(3)),
+            App.globalPut(vote_begin, Btoi(Txn.application_args[0])),
+            App.globalPut(vote_end, Btoi(Txn.application_args[1])),
+            App.globalPut(survey_title, Btoi(Txn.application_args[2])),
             App.globalPut(vote_count_yes, Int(0)),
             App.globalPut(vote_count_no, Int(0)),
             Approve(),
     )
 
-    # We use the optin call for registration
-    # We allow to optin during registration period, note that And returns either 1 or 0, therefore we don't need Approve() or Reject()
-    on_optin = Return(
-        And(
-            Global.round() >= App.globalGet(registration_begin),
-            Global.round() <= App.globalGet(registration_end)
-        )
-    )
+    #return is voter a creator
+    is_owner = Txn.sender() == App.globalGet(Bytes("Creator"))
 
     get_sender_vote = App.localGetEx(Txn.sender(), App.id(), has_voted)
 
-    on_vote = Seq(
-        # Note that all calls to local state for this app will fail if the sender account has not opted in, i.e. if i has not registered
+    vote = Seq(
         # Check if still within voting period
         Assert(And(
             Global.round() >= App.globalGet(vote_begin),
             Global.round() <= App.globalGet(vote_end)
         )),
         # Check if account already has voted
-        # Note: get_sender_vote has to be called before hasValue() can be used on it. This is required by Appl.localGetEx
         get_sender_vote,
         Assert(Not(get_sender_vote.hasValue())),
 
@@ -61,6 +57,26 @@ def approval_program():
         App.localPut(Txn.sender(), has_voted, Txn.application_args[0]),
         Approve()
     )
+
+    # title = Btoi(Txn.application_args[1])
+    # description = Btoi(Txn.application_args[2])
+    # validUntil = Btoi(Txn.application_args[3])
+    # create_survey = Seq([
+    #     # Check that there are 3 arguments
+    #     Assert(Txn.application_args.length() == Int(3)),  
+    #     # Verify that it is only 1 transaction                                   
+    #     Assert(Global.group_size() == Int(1)),   
+    #     # Perform default transaction checks                                            
+    #     defaultTransactionChecks(Int(0)),   
+    #     # Check that the price is greater than 0                                                      
+    #     Assert(validUntil > Int(0)),                                                                      
+
+    #     App.localPut(survey_title, title),
+    #     App.localPut(survey_description, description),
+    #     App.localPut(survey_valid_until, validUntil),
+    #     Approve()
+    # ])
+
     # We use the close out call to retract an accounts vote
     # This is only possible during the voting period, afterwards the accounts vote is immutable
     on_close_out =  Seq(
@@ -73,15 +89,24 @@ def approval_program():
             Approve()
     )
 
+    reset_contract = Seq (
 
-    return Cond(
+    ) 
+
+
+    program =  Cond(
         [Txn.application_id() == Int(0), on_creation],
-        [Txn.on_completion() == OnComplete.DeleteApplication, Approve()],
+        # Transaction to delete the application
+        [Txn.on_completion() == OnComplete.DeleteApplication, Reject()],
+        # Transaction to update TEAL Programs for a contract.
         [Txn.on_completion() == OnComplete.UpdateApplication, Reject()],
+        # Accounts use this transaction to close out their participation in the contract. This call can fail based on the TEAL logic
         [Txn.on_completion() == OnComplete.CloseOut, on_close_out],
-        [Txn.on_completion() == OnComplete.OptIn, on_optin],
-        [Txn.on_completion() == OnComplete.NoOp, on_vote],
+        [Txn.on_completion() == OnComplete.NoOp, vote],
+        [Txn.on_completion() == OnComplete.NoOp, title],
     )
+
+    return program
 
 
 # The clear state program can also be used to retract an accounts vote. The logic is the same as for the close out call.
