@@ -103,7 +103,6 @@ def approval_program():
         # Accounts use this transaction to close out their participation in the contract. This call can fail based on the TEAL logic
         [Txn.on_completion() == OnComplete.CloseOut, on_close_out],
         [Txn.on_completion() == OnComplete.NoOp, vote],
-        [Txn.on_completion() == OnComplete.NoOp, survey_title],
     )
 
     return program
