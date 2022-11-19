@@ -8,6 +8,7 @@ vote_end = Bytes("vote_end")
 vote_count_yes = Bytes("votes_yes")
 vote_count_no = Bytes("votes_no")
 has_voted = Bytes("has_voted")
+current_time = Bytes("current_time")
 
 survey_title = Bytes("Title")
 
@@ -46,36 +47,37 @@ def approval_program():
         )),
         # Check if account already has voted
         get_sender_vote,
-        Assert(Not(get_sender_vote.hasValue())),
+        Assert(Or(
+            Not(get_sender_vote.has_value()), 
+            Not(get_sender_vote.value() == App.globalGet(survey_title))   
+            )
+        ),
 
         # Update vote counter based on vote
         Cond(
-            [Txn.application_args[0] == yes_vote, App.globalPut(vote_count_yes, App.globalGet(vote_count_yes) + Int(1))],
-            [Txn.application_args[0] == no_vote, App.globalPut(vote_count_no, App.globalGet(vote_count_no) + Int(1))]
+            [Txn.application_args[1] == yes_vote, App.globalPut(vote_count_yes, App.globalGet(vote_count_yes) + Int(1))],
+            [Txn.application_args[1] == no_vote, App.globalPut(vote_count_no, App.globalGet(vote_count_no) + Int(1))]
         ),
         # Set the has_voted field to the sender's vote, to make sure an account cannot vote again
-        App.localPut(Txn.sender(), has_voted, Txn.application_args[0]),
+        App.localPut(Txn.sender(), has_voted, App.globalGet(survey_tittle)),
         Approve()
     )
 
-    # title = Btoi(Txn.application_args[1])
-    # description = Btoi(Txn.application_args[2])
-    # validUntil = Btoi(Txn.application_args[3])
-    # create_survey = Seq([
-    #     # Check that there are 3 arguments
-    #     Assert(Txn.application_args.length() == Int(3)),  
-    #     # Verify that it is only 1 transaction                                   
-    #     Assert(Global.group_size() == Int(1)),   
-    #     # Perform default transaction checks                                            
-    #     defaultTransactionChecks(Int(0)),   
-    #     # Check that the price is greater than 0                                                      
-    #     Assert(validUntil > Int(0)),                                                                      
+    reset = Seq(
+        Assert(Txn.application_args.length() == Int(4)),
+        Assert(Global.latest_timestamp() > App.globalGet(vote_end)),
+        App.globalPut(vote_begin, Btoi(Txn.application_args[1])),
+        App.globalPut(vote_end, Btoi(Txn.application_args[2])),
+        App.globalPut(survey_title, Txn.application_args[3]),
+        App.globalPut(vote_count_yes, Int(0)),
+        App.globalPut(vote_count_no, Int(0)),
+        Approve(),
+    )
 
-    #     App.localPut(survey_title, title),
-    #     App.localPut(survey_description, description),
-    #     App.localPut(survey_valid_until, validUntil),
-    #     Approve()
-    # ])
+    on_event = Cond(
+        [Txn.application_args[0] == Bytes("vote"), vote],
+        [Txn.application_args[0] == Bytes("reset"), reset]
+    )
 
     # We use the close out call to retract an accounts vote
     # This is only possible during the voting period, afterwards the accounts vote is immutable
@@ -102,7 +104,7 @@ def approval_program():
         [Txn.on_completion() == OnComplete.UpdateApplication, Reject()],
         # Accounts use this transaction to close out their participation in the contract. This call can fail based on the TEAL logic
         [Txn.on_completion() == OnComplete.CloseOut, on_close_out],
-        [Txn.on_completion() == OnComplete.NoOp, vote],
+        [Txn.on_completion() == OnComplete.NoOp, on_event],
     )
 
     return program
