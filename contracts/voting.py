@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pyteal import *
-import os
+
+contract_name="voting"
 
 # Keys
 vote_begin = Bytes("vote_bgn")
@@ -123,19 +124,3 @@ def clear_state_program():
             ),
             Approve()
     )
-
-
-
-
-# Compiles PyTEAL code to TEAL, .teal files are placed into ./build
-if __name__ == "__main__":
-    os.makedirs("build", exist_ok=True)
-    approval_file = "build/voting_approval.teal"
-    with open(approval_file, "w") as f:
-        compiled = compileTeal(approval_program(), mode=Mode.Application, version=5)
-        f.write(compiled)
-
-    clear_state_file = "build/voting_clear_state.teal"
-    with open(clear_state_file, "w") as f:
-        compiled = compileTeal(clear_state_program(), mode=Mode.Application, version=5)
-        f.write(compiled)
