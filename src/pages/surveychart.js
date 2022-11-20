@@ -26,6 +26,7 @@ const mockSurvey = {
     "This survey is about whether Schweinerbraten should be served tomorrow in canteen.",
   expirationDate: "23:59, November 20, 2022",
 };
+
 const SurveyChart = () => {
   return (
     <Box

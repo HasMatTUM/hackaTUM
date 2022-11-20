@@ -5,6 +5,8 @@ const Route = express.Router();
 
 const StudentController = require('./controllers/StudentController')
 const SetupController = require('./controllers/SetupController')
+const VoteController = require('./controllers/VoteController');
+const SurveyController = require('./controllers/SurveyController');
 /**
  * APIs V1 Routes
  */
@@ -17,31 +19,21 @@ Route.route('/api/v1')
 	.all(Utilities.send405);
 
 
-
-// Scaffolding Endpoints:
 Route.route('/reset')
 	.get(SetupController.reset)
 	.all(Utilities.send405);
 
+Route.route('/active_survey')
+	.get(SurveyController.getActiveSurveyData)
+	.all(Utilities.send405);
+
 
 Route.route('/vote/')
-	.get(StudentController.getUserByID)
+	.post(VoteController.vote)
 	.all(Utilities.send405);
 
-/* Route.route('/api/v1/auth/login')
-	.post(StudentController.login)
+Route.route('/waiting_for_confirmation/')
+	.get(VoteController.checkVoteTransactionStatus)
 	.all(Utilities.send405);
-
-Route.route('/api/v1/auth/signup')
-	.post(StudentController.signup)
-	.all(Utilities.send405); */
-/* 
-Route.route('/api/v1/auth/users')
-	.get(Utilities.verifyAccessToken, StudentController.users)
-	.all(Utilities.send405);
-
-Route.route('/api/v1/auth/user')
-	.get(Utilities.verifyAccessToken, StudentController.getUserByID)
-	.all(Utilities.send405); */
 
 module.exports = Route

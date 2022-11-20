@@ -7,12 +7,24 @@ const VotingPage = () => {
   const router = useRouter();
 
   const onVoteYes = () => {
-    console.log("user has voted yes");
-    router.push("/successpage");
+    castVote("yes")
   };
   const onVoteNo = () => {
-    console.log("user has voted no");
-    router.push("/waitingpage");
+    castVote("no")
+  };
+
+  const castVote = (vote) => {
+    fetch('/vote', {
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ answer: vote }),
+    }).then((response) => {
+      router.push("/waitingpage", { vote: vote });
+    }).catch((error) => {
+      console.error('Error:', error);
+    });
   };
 
   return (

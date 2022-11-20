@@ -2,6 +2,18 @@ const Utilities = require('../Utilities')
 const Survey = require('../models/Survey')
 
 class SurveyController {
+
+    async getActiveSurveyData(req, res) {
+        try {
+            // TODO: get survey information from Contract
+            const surveyInfo = await Survey.findOne({ concluded: false })
+            Utilities.apiResponse(res, 200, 'Active Survey', surveyInfo)
+        } catch (err) {
+            console.log(err);
+
+        }
+    }
+
     async seedSurvey(req, res) {
         console.log("Creating default survey ...")
         try {
