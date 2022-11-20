@@ -49,7 +49,7 @@ def approval_program():
         # Check if account already has voted
         get_sender_vote,
         Assert(Or(
-            Not(get_sender_vote.has_value()), 
+            Not(get_sender_vote.hasValue()), 
             Not(get_sender_vote.value() == App.globalGet(survey_title))   
             )
         ),
@@ -60,7 +60,7 @@ def approval_program():
             [Txn.application_args[1] == no_vote, App.globalPut(vote_count_no, App.globalGet(vote_count_no) + Int(1))]
         ),
         # Set the has_voted field to the sender's vote, to make sure an account cannot vote again
-        App.localPut(Txn.sender(), has_voted, App.globalGet(survey_tittle)),
+        App.localPut(Txn.sender(), has_voted, App.globalGet(survey_title)),
         Approve()
     )
 
