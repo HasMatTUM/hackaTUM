@@ -5,9 +5,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import storage from "redux-persist/lib/storage";
 
 import AuthReducer from "./reducers/AuthReducer";
+import SurveyReducer from "./reducers/SurveyReducer";
+import VoteReducer from "./reducers/VoteReducer";
 
 const appReducer = combineReducers({
   auth: AuthReducer,
+  vote: VoteReducer,
+  survey: SurveyReducer,
 });
 
 const rootReducer = (state, action) => {

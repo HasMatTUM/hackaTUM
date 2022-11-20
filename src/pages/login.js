@@ -3,11 +3,14 @@ import { Button, Box, Paper, Grid, Typography, TextField } from "@mui/material";
 import styled from "styled-components";
 import Link from "next/link";
 import Header from "../components/Header";
+import { useSelector } from "react-redux";
+
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [errorMessage, setErrorMessage] = React.useState("");
 
+  const user = useSelector((state) => state.auth.user);
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
   };
