@@ -1,6 +1,7 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Button, Box, Typography, Container, Paper, Grid } from "@mui/material";
 import { Header } from "../components";
+import Link from "next/link";
 const SuccessPage = () => {
   return (
     <Box
@@ -30,7 +31,17 @@ const SuccessPage = () => {
             fontSize="large"
             sx={{ mb: 5 }}
           />
-          <Typography variant="body1">You have voted successfully!</Typography>
+          <Typography variant="body1" sx={{ mb: 5 }}>
+            You have voted successfully!
+          </Typography>
+          <Link
+            href="https://testnet.algoexplorer.io/application/124052787"
+            passHref
+          >
+            <Button variant="contained" color="primary" sx={{ width: 850 }}>
+              View Results
+            </Button>
+          </Link>
         </Box>
       </Container>
     </Box>
