@@ -37,12 +37,13 @@ const VotingPage = () => {
               flexDirection: "column",
             }}
           >
-            <Box sx={{ pb: 5, mt: 4, mb: 2 }}>
+            <Box sx={{ pb: 5, mt: 4 }}>
               <Typography variant="h3">Sample Vote 1</Typography>
             </Box>
             <Box sx={{ pb: 5, mt: 2 }}>
-              <Typography VARIANT="body1">Sample question 1</Typography>
-              <Typography VARIANT="body1">Sample question 1</Typography>
+              <Typography VARIANT="body1">
+                Do you think that TUM should hold HackaTUM twice a year?
+              </Typography>
             </Box>
             <Grid container spacing={2}>
               <Grid item xs={12}>

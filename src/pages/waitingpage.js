@@ -16,7 +16,6 @@ const waitingpage = () => {
       <Typography variant="subtitle1">
         Waiting for the verifying process, please wait...
       </Typography>
-
       <CircularProgress sx={{ mt: 5 }} />
     </Box>
   );

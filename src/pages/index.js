@@ -32,14 +32,23 @@ const Home = () => {
               <Box sx={{ mt: 5 }}>
                 <img src={"/voting.jpg"} width="700px" height="300px"></img>
               </Box>
-              <Box sx={{ mt: 10 }}>
+              <Box sx={{ mt: 5 }}>
+                <Link href="/surveychart" passHref>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mr: 3, width: 700, mb: 2 }}
+                  >
+                    View the current survey
+                  </Button>
+                </Link>
                 <Link href="/login" passHref>
                   <Button
                     variant="contained"
                     color="primary"
                     sx={{ mr: 3, width: 700 }}
                   >
-                    Login
+                    Login to vote
                   </Button>
                 </Link>
               </Box>
