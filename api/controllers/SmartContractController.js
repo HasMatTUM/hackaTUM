@@ -13,9 +13,8 @@ const LOGGED_IN_STUDENT = "FMSO6KDA5MNQ4GOG5TP2SFU2XJY6G2VTW5Y5IBOMX2AGU73EHZBTT
 const CREATOR_ACCOUNT = algosdk.mnemonicToSecretKey("river witness cover under please demise car record multiply skirt eight gossip flee law castle depend paddle sponsor force good quote toss barely above glance");
 
 
-const SMART_CONTRACT_ADDRESS = "#TODO"
 //const APP_ID = 124002380
-const APP_ID = 124046953 // counter
+const APP_ID = 124052787 // counter
 
 
 const baseServer = 'https://testnet-algorand.api.purestake.io/ps2';

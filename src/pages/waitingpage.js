@@ -1,6 +1,15 @@
 import { Box, CircularProgress, Typography } from "@mui/material";
 
+
+import { useRouter } from "next/router";
+
+
 const waitingpage = () => {
+
+  const router = useRouter();
+  setTimeout(function () {
+    router.push("/successpage");
+  }, 3000);
   return (
     <Box
       sx={{
